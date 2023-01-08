@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: plugin_name
+Plugin Name: reventz
 Plugin URI: #
 Description: A WordPress boilerplate plugin with Vue js.
 Version: 1.0.0
@@ -32,15 +32,15 @@ Text Domain: textdomain
 if (!defined('ABSPATH')) {
     exit;
 }
-if (!defined('PLUGINNAME_VERSION')) {
-    define('PLUGINNAME_VERSION_LITE', true);
-    define('PLUGINNAME_VERSION', '1.1.0');
-    define('PLUGINNAME_MAIN_FILE', __FILE__);
-    define('PLUGINNAME_URL', plugin_dir_url(__FILE__));
-    define('PLUGINNAME_DIR', plugin_dir_path(__FILE__));
-    define('PLUGINNAME_UPLOAD_DIR', '/plugin_name');
+if (!defined('REVENTZ_VERSION')) {
+    define('REVENTZ_VERSION_LITE', true);
+    define('REVENTZ_VERSION', '1.1.0');
+    define('REVENTZ_MAIN_FILE', __FILE__);
+    define('REVENTZ_URL', plugin_dir_url(__FILE__));
+    define('REVENTZ_DIR', plugin_dir_path(__FILE__));
+    define('REVENTZ_UPLOAD_DIR', '/reventz');
 
-    class PluginName
+    class reventz
     {
         public function boot()
         {
@@ -51,42 +51,42 @@ if (!defined('PLUGINNAME_VERSION')) {
 
         public function adminHooks()
         {
-            require PLUGINNAME_DIR . 'includes/autoload.php';
+            require REVENTZ_DIR . 'includes/autoload.php';
 
             //Register Admin menu
-            $menu = new \PluginName\Classes\Menu();
+            $menu = new \reventz\Classes\Menu();
             $menu->register();
 
             // Top Level Ajax Handlers
-            $ajaxHandler = new \PluginName\Classes\AdminAjaxHandler();
+            $ajaxHandler = new \reventz\Classes\AdminAjaxHandler();
             $ajaxHandler->registerEndpoints();
 
-            add_action('plugin_name/render_admin_app', function () {
-                $adminApp = new \PluginName\Classes\AdminApp();
+            add_action('reventz/render_admin_app', function () {
+                $adminApp = new \reventz\Classes\AdminApp();
                 $adminApp->bootView();
             });
         }
 
         public function textDomain()
         {
-            load_plugin_textdomain('plugin_name', false, basename(dirname(__FILE__)) . '/languages');
+            load_plugin_textdomain('reventz', false, basename(dirname(__FILE__)) . '/languages');
         }
     }
 
     add_action('plugins_loaded', function () {
-        (new PluginName())->boot();
+        (new reventz())->boot();
     });
 
     register_activation_hook(__FILE__, function ($newWorkWide) {
-        require_once(PLUGINNAME_DIR . 'includes/Classes/Activator.php');
-        $activator = new \PluginName\Classes\Activator();
+        require_once(REVENTZ_DIR . 'includes/Classes/Activator.php');
+        $activator = new \reventz\Classes\Activator();
         $activator->migrateDatabases($newWorkWide);
     });
 
     // disabled admin-notice on dashboard
     add_action('admin_init', function () {
         $disablePages = [
-            'plugin_name.php',
+            'reventz.php',
         ];
         if (isset($_GET['page']) && in_array($_GET['page'], $disablePages)) {
             remove_all_actions('admin_notices');

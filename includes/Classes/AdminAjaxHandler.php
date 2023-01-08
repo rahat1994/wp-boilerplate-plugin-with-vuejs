@@ -1,12 +1,12 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 class AdminAjaxHandler
 {
     public function registerEndpoints()
     {
-        add_action('wp_ajax_plugin_name_admin_ajax', array($this, 'handleEndPoint'));
+        add_action('wp_ajax_reventz_admin_ajax', array($this, 'handleEndPoint'));
     }
     public function handleEndPoint()
     {
@@ -17,10 +17,10 @@ class AdminAjaxHandler
         );
 
         if (isset($validRoutes[$route])) {
-            do_action('plugin_name/doing_ajax_forms_' . $route);
+            do_action('reventz/doing_ajax_forms_' . $route);
             return $this->{$validRoutes[$route]}();
         }
-        do_action('plugin_name/admin_ajax_handler_catch', $route);
+        do_action('reventz/admin_ajax_handler_catch', $route);
     }
 
     protected function getData()

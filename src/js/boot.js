@@ -1,3 +1,3 @@
-import PluginName from './plugin_main_js_file';
+import reventz from './plugin_main_js_file';
 
-window.PluginName = new PluginName();
+window.reventz = new reventz();

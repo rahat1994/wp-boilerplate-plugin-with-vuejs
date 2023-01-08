@@ -3,14 +3,14 @@
 /**
  * Autoloader
  *
- * @package PluginName
+ * @package reventz
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 include 'global_functions.php';
-if (!function_exists('PluginNameAutoload')) {
+if (!function_exists('reventzAutoload')) {
     /**
      * Plugin autoloader.
      *
@@ -22,10 +22,10 @@ if (!function_exists('PluginNameAutoload')) {
      *
      * @param $class
      */
-    function PluginNameAutoload($class)
+    function reventzAutoload($class)
     {
         // Do not load unless in plugin domain.
-        $namespace = 'PluginName';
+        $namespace = 'reventz';
         if (strpos($class, $namespace) !== 0) {
             return;
         }
@@ -44,5 +44,5 @@ if (!function_exists('PluginNameAutoload')) {
         }
     }
     // Register the autoloader.
-    spl_autoload_register('PluginNameAutoload');
+    spl_autoload_register('reventzAutoload');
 }

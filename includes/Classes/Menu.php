@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 class Menu
 {
@@ -16,65 +16,65 @@ class Menu
             return;
         }
 
-        $title = __('YourPlugin', 'textdomain');
+        $title = __('reventz', 'textdomain');
         global $submenu;
         add_menu_page(
             $title,
             $title,
             $menuPermission,
-            'plugin_name.php',
+            'reventz.php',
             array($this, 'enqueueAssets'),
             'dashicons-admin-site',
             25
         );
 
-        $submenu['plugin_name.php']['my_profile'] = array(
+        $submenu['reventz.php']['my_profile'] = array(
             __('Plugin Dashboard', 'textdomain'),
             $menuPermission,
-            'admin.php?page=plugin_name.php#/',
+            'admin.php?page=reventz.php#/',
         );
-        $submenu['plugin_name.php']['settings'] = array(
+        $submenu['reventz.php']['settings'] = array(
             __('Settings', 'textdomain'),
             $menuPermission,
-            'admin.php?page=plugin_name.php#/settings',
+            'admin.php?page=reventz.php#/settings',
         );
-        $submenu['plugin_name.php']['supports'] = array(
+        $submenu['reventz.php']['supports'] = array(
             __('Supports', 'textdomain'),
             $menuPermission,
-            'admin.php?page=plugin_name.php#/supports',
+            'admin.php?page=reventz.php#/supports',
         );
     }
 
     public function enqueueAssets()
     {
-        do_action('plugin_name/render_admin_app');
+        do_action('reventz/render_admin_app');
         wp_enqueue_script(
-            'plugin_name_boot',
-            PLUGINNAME_URL . 'assets/js/boot.js',
+            'reventz_boot',
+            REVENTZ_URL . 'assets/js/boot.js',
             array('jquery'),
-            PLUGINNAME_VERSION,
+            REVENTZ_VERSION,
             true
         );
 
         // 3rd party developers can now add their scripts here
-        do_action('plugin_name/booting_admin_app');
+        do_action('reventz/booting_admin_app');
         wp_enqueue_script(
-            'plugin_name_js',
-            PLUGINNAME_URL . 'assets/js/plugin-main-js-file.js',
-            array('plugin_name_boot'),
-            PLUGINNAME_VERSION,
+            'reventz_js',
+            REVENTZ_URL . 'assets/js/plugin-main-js-file.js',
+            array('reventz_boot'),
+            REVENTZ_VERSION,
             true
         );
 
         //enque css file
-        wp_enqueue_style('plugin_name_admin_css', PLUGINNAME_URL . 'assets/css/element.css');
+        wp_enqueue_style('reventz_admin_css', REVENTZ_URL . 'assets/css/element.css');
 
-        $PluginNameAdminVars = apply_filters('plugin_name/admin_app_vars', array(
+        $reventzAdminVars = apply_filters('reventz/admin_app_vars', array(
             //'image_upload_url' => admin_url('admin-ajax.php?action=wpf_global_settings_handler&route=wpf_upload_image'),
-            'assets_url' => PLUGINNAME_URL . 'assets/',
+            'assets_url' => REVENTZ_URL . 'assets/',
             'ajaxurl' => admin_url('admin-ajax.php')
         ));
 
-        wp_localize_script('plugin_name_boot', 'PluginNameAdmin', $PluginNameAdminVars);
+        wp_localize_script('reventz_boot', 'reventzAdmin', $reventzAdminVars);
     }
 }

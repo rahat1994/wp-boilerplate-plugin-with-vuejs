@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 class HelperClass
 {

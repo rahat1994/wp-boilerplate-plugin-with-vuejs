@@ -1,13 +1,13 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Register and initialize custom post type for plugin_name
+ * Register and initialize custom post type for reventz
  * @since 1.0.0
  */
 
@@ -25,6 +25,6 @@ class PostType
             'public'          => false,
             'show_ui'         => false,
         );
-        register_post_type('plugin_name', $args);
+        register_post_type('reventz', $args);
     }
 }

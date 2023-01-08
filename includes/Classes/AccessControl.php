@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 class AccessControl
 {
@@ -8,8 +8,8 @@ class AccessControl
     {
         $menuPermissions = array(
             'manage_options',
-            'plugin_name_full_access',
-            'plugin_name_can_view_menus'
+            'reventz_full_access',
+            'reventz_can_view_menus'
         );
         foreach ($menuPermissions as $menuPermission) {
             if (current_user_can($menuPermission)) {

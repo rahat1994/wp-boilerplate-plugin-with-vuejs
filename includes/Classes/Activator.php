@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -42,13 +42,15 @@ class Activator
         */
 
         // $this->createBookmarkTable();
+
+        
     }
 
     public function createBookmarkTable()
     {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
-        $table_name = $wpdb->prefix . 'plugin_name';
+        $table_name = $wpdb->prefix . 'reventz';
         $sql = "CREATE TABLE $table_name (
                                              pl_id int(10) NOT NULL AUTO_INCREMENT,
                                              pl_name varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,

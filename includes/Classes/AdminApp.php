@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginName\Classes;
+namespace reventz\Classes;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -14,6 +14,6 @@ class AdminApp
 {
     public function bootView()
     {
-        echo "<div id='plugin_name_app'></div>";
+        echo "<div id='reventz_app'></div>";
     }
 }
