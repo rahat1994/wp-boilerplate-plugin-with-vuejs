@@ -7,7 +7,7 @@ Description: A WordPress boilerplate plugin with Vue js.
 Version: 1.0.0
 Author: #
 Author URI: #
-License: A "Slug" license name e.g. GPL2
+License: GPL2
 Text Domain: textdomain
 */
 
@@ -29,71 +29,167 @@ Text Domain: textdomain
  * Copyright 2019 Plugin Name LLC. All rights reserved.
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-}
-if (!defined('REVENTZ_VERSION')) {
-    define('REVENTZ_VERSION_LITE', true);
-    define('REVENTZ_VERSION', '1.1.0');
-    define('REVENTZ_MAIN_FILE', __FILE__);
-    define('REVENTZ_URL', plugin_dir_url(__FILE__));
-    define('REVENTZ_DIR', plugin_dir_path(__FILE__));
-    define('REVENTZ_UPLOAD_DIR', '/reventz');
+defined( 'ABSPATH' ) || exit();
 
-    class reventz
-    {
-        public function boot()
-        {
-            if (is_admin()) {
-                $this->adminHooks();
+final class Reventz{
+
+    /**
+	 * The single instance of the class.
+	 *
+	 * @since 1.0.0
+	 * @var Reventz
+	 */
+	protected static $instance = null;
+
+    /**
+	 * Main Reventz Instance.
+	 *
+	 * Ensures only one instance of Reventz is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * @static
+	 * @return Reventz - Main instance.
+	 * @see reventz()
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+    /**
+	 * Cloning is forbidden.
+	 *
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public function __clone() {
+		_doing_it_wrong( __FUNCTION__, 'UnAuthorised action!', '1.0.0' );
+	}
+
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public function __wakeup() {
+		_doing_it_wrong( __FUNCTION__, 'UnAuthorised action!', '1.0.0' );
+	}
+
+    /**
+	 * Reventz constructor.
+    */
+	public function __construct() {
+		$this->define_constants();
+		$this->init_hooks();
+	}
+
+    /**
+	 * define all required constants
+	 *
+	 * since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function define_constants() {
+		$upload_dir = wp_upload_dir( null, false );
+        define('REVENTZ_VERSION_LITE', true);
+        define('REVENTZ_VERSION', '1.1.0');
+        define('REVENTZ_MAIN_FILE', __FILE__);
+        define('REVENTZ_URL', plugin_dir_url(__FILE__));
+        define('REVENTZ_DIR', plugin_dir_path(__FILE__));
+        define('REVENTZ_UPLOAD_DIR', '/reventz');
+        define( 'REVENTZ_LOG_DIR', $upload_dir['basedir'] . '/reventz-logs/' );
+	}
+
+    /**
+	 * Hook into actions and filters.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	private function init_hooks() {
+        register_activation_hook(__FILE__, function ($newWorkWide) {
+            require_once(REVENTZ_DIR . 'includes/Classes/Activator.php');
+            $activator = new \reventz\Classes\Activator();
+            $activator->migrateDatabases($newWorkWide);
+        });
+    
+        // disabled admin-notice on dashboard
+        add_action('admin_init', function () {
+            $disablePages = [
+                'reventz.php',
+            ];
+            if (isset($_GET['page']) && in_array($_GET['page'], $disablePages)) {
+                remove_all_actions('admin_notices');
             }
-        }
+        });
 
-        public function adminHooks()
-        {
-            require REVENTZ_DIR . 'includes/autoload.php';
+		register_shutdown_function( array( $this, 'log_errors' ) );
+		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ), - 1 );
+	}
 
-            //Register Admin menu
-            $menu = new \reventz\Classes\Menu();
-            $menu->register();
-
-            // Top Level Ajax Handlers
-            $ajaxHandler = new \reventz\Classes\AdminAjaxHandler();
-            $ajaxHandler->registerEndpoints();
-
-            add_action('reventz/render_admin_app', function () {
-                $adminApp = new \reventz\Classes\AdminApp();
-                $adminApp->bootView();
-            });
-        }
-
-        public function textDomain()
-        {
-            load_plugin_textdomain('reventz', false, basename(dirname(__FILE__)) . '/languages');
+    /**
+	 * Hook into actions and filters.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+    public function on_plugins_loaded()
+    {
+        if (is_admin()) {
+            $this->adminHooks();
         }
     }
 
-    add_action('plugins_loaded', function () {
-        (new reventz())->boot();
-    });
+    public function adminHooks()
+    {
+        require REVENTZ_DIR . 'includes/autoload.php';
 
-    register_activation_hook(__FILE__, function ($newWorkWide) {
-        require_once(REVENTZ_DIR . 'includes/Classes/Activator.php');
-        $activator = new \reventz\Classes\Activator();
-        $activator->migrateDatabases($newWorkWide);
-    });
+        //Register Admin menu
+        $menu = new \reventz\Classes\Menu();
+        $menu->register();
 
-    // disabled admin-notice on dashboard
-    add_action('admin_init', function () {
-        $disablePages = [
-            'reventz.php',
-        ];
-        if (isset($_GET['page']) && in_array($_GET['page'], $disablePages)) {
-            remove_all_actions('admin_notices');
-        }
-    });
-} else {
-    add_action('admin_init', function () {
-        deactivate_plugins(plugin_basename(__FILE__));
-    });
+        // Top Level Ajax Handlers
+        $ajaxHandler = new \reventz\Classes\AdminAjaxHandler();
+        $ajaxHandler->registerEndpoints();
+
+        add_action('reventz/render_admin_app', function () {
+            $adminApp = new \reventz\Classes\AdminApp();
+            $adminApp->bootView();
+        });
+    }
+
+    /**
+	 * Ensures fatal errors are logged so they can be picked up in the status report.
+	 *
+	 * @since 1.0.2
+	 * @return void
+	 */
+	public function log_errors() {
+		//  write error logging function
+	}
 }
+
+/**
+ * Returns the main instance of Plugin.
+ *
+ * @since  1.0.0
+ * @return Reventz
+ */
+function reventz() {
+	return Reventz::instance();
+
+    if (defined('REVENTZ_VERSION')) {
+        add_action('admin_init', function () {
+            deactivate_plugins(plugin_basename(__FILE__));
+        });
+    }
+}
+
+reventz();
+
+
