@@ -41,16 +41,79 @@ class Activator
         * and write your own query at createBookmarkTable function
         */
 
-        // $this->createBookmarkTable();
+        $this->createEventsTable();
+        $this->createTicketTypesTable();
+        $this->createBookingsTable();
 
-        
+
+
+    }
+
+    public function createEventsTable()
+    {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $wpdb->prefix . 're_events';
+
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `name` varchar(255) NOT NULL,
+            `is_online` tinyint(1) NOT NULL DEFAULT '0',
+            `slug` varchar(255) NOT NULL DEFAULT '0',
+            `description` longtext NULL,
+            `social_media` json NOT NULL,
+            `form_fields` json NOT NULL,
+            PRIMARY KEY (`id`)
+        ) $charset_collate;";
+
+        $this->runSQL($sql, $table_name);
+    }
+    public function createTicketTypesTable()
+    {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $wpdb->prefix . 're_ticket_types';
+
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `event_id` int DEFAULT NULL,
+            `name` varchar(255) NOT NULL,
+            `limit` int DEFAULT NULL,
+            `price` decimal(10,2) DEFAULT 0.0,
+            `description` longtext,
+            `created_at` datetime NOT NULL,
+            `updated_at` datetime NOT NULL,
+            PRIMARY KEY (`id`)
+          ) $charset_collate;";
+
+        $this->runSQL($sql, $table_name);
+    }
+
+    public function createBookingsTable()
+    {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $wpdb->prefix . 're_bookings';
+
+        $sql = "CREATE TABLE $table_name (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `event_id` int NOT NULL,
+            `ticket_type_id` int NOT NULL,
+            `info` json NOT NULL,
+            `payment_info` json NOT NULL,
+            `created_at` timestamp NOT NULL,
+            `updated_at` timestamp NOT NULL,
+            PRIMARY KEY (`id`)
+        ) $charset_collate;";
+
+        $this->runSQL($sql, $table_name);
     }
 
     public function createBookmarkTable()
     {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
-        $table_name = $wpdb->prefix . 'reventz';
+        $table_name = $wpdb->prefix . 'bookmarks';
         $sql = "CREATE TABLE $table_name (
                                              pl_id int(10) NOT NULL AUTO_INCREMENT,
                                              pl_name varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
