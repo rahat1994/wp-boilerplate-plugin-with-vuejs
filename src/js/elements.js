@@ -52,7 +52,9 @@ import {
     DropdownMenu,
     Upload,
     Notification,
-    Card
+    Footer,
+    Card,
+    TimePicker
 } from 'element-ui';
 
 Vue.use(Button);
@@ -70,6 +72,7 @@ Vue.use(Pagination);
 Vue.use(TableColumn);
 Vue.use(Popover);
 Vue.use(Menu);
+Vue.use(Footer);
 Vue.use(Header);
 Vue.use(MenuItem);
 Vue.use(Loading);
@@ -103,6 +106,7 @@ Vue.use(Col);
 Vue.use(Transfer);
 Vue.use(DatePicker);
 Vue.use(Submenu);
+Vue.use(TimePicker);
 
 Vue.use(Loading.directive);
 Vue.prototype.$loading = Loading.service;

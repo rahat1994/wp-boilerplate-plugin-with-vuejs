@@ -25,7 +25,10 @@ class AdminAjaxHandler
 
     protected function getData()
     {
+        $data = [
+            'data' => "Success"
+        ];
         // write your sql queries here or another class, then send by a success response
-        // wp_send_json_success($data);
+        wp_send_json_success($data);
     }
 }
