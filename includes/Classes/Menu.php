@@ -1,7 +1,7 @@
 <?php
 
 namespace reventz\Classes;
-
+defined( 'ABSPATH' ) || exit();
 class Menu
 {
     public function register()

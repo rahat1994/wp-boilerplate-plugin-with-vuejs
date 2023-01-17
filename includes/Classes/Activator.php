@@ -2,9 +2,7 @@
 
 namespace reventz\Classes;
 
-if (!defined('ABSPATH')) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit();
 
 use reventz\Classes\Traits\DBTraits;
 /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace reventz\Classes\Traits;
+defined( 'ABSPATH' ) || exit();
 trait DBTraits
 {    
     private static function runSQL($sql, $tableName)

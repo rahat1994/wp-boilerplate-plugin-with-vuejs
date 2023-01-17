@@ -1,7 +1,7 @@
 <?php
 
 namespace reventz\Classes;
-
+defined( 'ABSPATH' ) || exit();
 use reventz\Classes\Models\Event;
 
 class AdminAjaxHandler

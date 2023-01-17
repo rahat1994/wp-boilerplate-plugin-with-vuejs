@@ -2,7 +2,7 @@
 
 namespace reventz\Classes\Models;
 use reventz\Classes\Models\BaseModel;
-
+defined( 'ABSPATH' ) || exit();
 class Event extends BaseModel
 {
     /**
