@@ -116,6 +116,7 @@ final class Reventz{
             require_once(REVENTZ_DIR . 'includes/Classes/Activator.php');
             $activator = new \reventz\Classes\Activator();
             $activator->migrateDatabases($newWorkWide);
+			$activator->seedDatabases($newWorkWide);
         });
     
         // disabled admin-notice on dashboard
