@@ -102,7 +102,7 @@ export default {
         },
         ajax(){
           var option = {
-            route: 'get_data'
+            route: 'create_event'
           };
           this.$adminGet(option).then((data) => {
               console.log(data);
