@@ -1,7 +1,7 @@
 <?php
 
 namespace reventz\Classes\Models;
-
+defined( 'ABSPATH' ) || exit();
 use reventz\Classes\Traits\DBTraits;
 class BaseModel
 {
@@ -18,10 +18,16 @@ class BaseModel
 	public function create($data)
 	{
 		global $wpdb;
-        
-		$create_statement = $this->prepareSQL($data);		
-		return $wpdb->query($create_statement);
+		$table_name = $wpdb->prefix . 're_events';
+		$id =  $wpdb->insert(
+			$table_name,
+			$data
+		);
 
+		if(is_wp_error($id)){
+			throw new \Exception($id->get_error_message());
+		}
+		return $id;
 	}
 
 	private function prepareSQL($data)
