@@ -18,13 +18,13 @@ class BaseModel
 	public function create($data)
 	{
 		global $wpdb;
-		$table_name = $wpdb->prefix . 're_events';
+		$table_name = $wpdb->prefix . $this->table;
 		$id =  $wpdb->insert(
 			$table_name,
 			$data
 		);
 
-		if(is_wp_error($id)){
+		if(is_a($id, 'WP_Error')){
 			throw new \Exception($id->get_error_message());
 		}
 		return $id;
@@ -33,7 +33,7 @@ class BaseModel
 	private function prepareSQL($data)
 	{
 		global $wpdb;
-        $table_name = $wpdb->prefix . 're_events';
+        $table_name = $wpdb->prefix . $this->table ;
 
 		$columns = $this->columnize(array_keys($data));
 		$parameters = $this->parameterize(array_values($data));

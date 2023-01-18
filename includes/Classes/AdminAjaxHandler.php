@@ -37,23 +37,42 @@ class AdminAjaxHandler
 
     protected function createEvent()
     {
-        $data = [
-            'name' => 'TEDx SUST',
-            'is_online' => 1,
-            'slug' => 'tedx-sust',
-            'description' => 'This is description',
-            'social_media' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
-            'form_fields' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
-        ];
+        try {
+            $data = [
+                'name' => 'TEDx SUST',
+                'is_online' => 1,
+                'slug' => 'tedx-sust',
+                'description' => 'This is description',
+                'social_media' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
+                'form_fields' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
+                'ticket_types' => [
+                    [
+                        [
+                            "name" => "V.I.P Seats",
+                            "price" => 1500
+                        ],
+                        [
+                            "name" => "Second Row",
+                            "price" => 500
+                        ]
+                    ]
+                ]
+            ];
+            
+            $event = new Event();
+            $result = $event->create($data);
+    
+            $data = [
+                'data' => $result
+            ];
 
-        $event = new Event();
-        $result = $event->create($data);
+            wp_send_json_success($data);
+        } catch (\Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ], 423);
+        }
 
-        $data = [
-            'data' => $result
-        ];
-        // write your sql queries here or another class, then send by a success response
-        wp_send_json_success($data);
     }
 }
 
