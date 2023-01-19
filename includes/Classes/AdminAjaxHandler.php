@@ -1,6 +1,7 @@
 <?php
 
 namespace reventz\Classes;
+use reventz\Classes\Models\TicketType;
 defined( 'ABSPATH' ) || exit();
 use reventz\Classes\Models\Event;
 
@@ -45,25 +46,42 @@ class AdminAjaxHandler
                 'description' => 'This is description',
                 'social_media' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
                 'form_fields' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
-                'ticket_types' => [
+                'ticket_types' => [                    
+                    
                     [
-                        [
-                            "name" => "V.I.P Seats",
-                            "price" => 1500
-                        ],
-                        [
-                            "name" => "Second Row",
-                            "price" => 500
-                        ]
+                        "name" => "V.I.P Seats",
+                        "price" => 1500,
+                        "limit" => 50,
+                        "Descroption" => "Thisi si akha description"
+                        
+                    ],
+                    [
+                        "name" => "Second Row",
+                        "price" => 500,
+                        "limit" => 420,
+                        "Descroption" => "Thisi si akha description"
                     ]
+                                        
                 ]
             ];
-            
+
+            $eventTableData = $data;
+            unset($eventTableData['ticket_types']);
+
             $event = new Event();
-            $result = $event->create($data);
+            $event_id = $event->create($eventTableData);
+
+            $ticketTypeIdArray = [];
+            foreach ($data['ticket_types'] as $ticketTypekey => $ticketTypeData) {
+
+                $ticketType = new TicketType();
+                $ticketTypeData['event_id'] = $event_id;
+                $ticketTypeIdArray[] = $ticketType->create($ticketTypeData);
+
+            }
     
             $data = [
-                'data' => $result
+                'data' => "Event Created Succesfully"
             ];
 
             wp_send_json_success($data);
