@@ -12,5 +12,5 @@ class Event extends BaseModel
 	 */
     protected $table = 're_events';
 
-
+	protected $guarded = ['id'];
 }

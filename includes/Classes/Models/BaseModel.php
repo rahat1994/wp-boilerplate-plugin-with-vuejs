@@ -14,31 +14,43 @@ class BaseModel
     protected $table;
 
 	protected $fillable;
+	protected $guarded = ['id'];
+
 
 	public function create($data)
 	{
+		$data = $this->removeGuardedColumns($data);
+
 		global $wpdb;
-		$table_name = $wpdb->prefix . $this->table;
-		$id =  $wpdb->insert(
-			$table_name,
+		$tableName = $wpdb->prefix . $this->table;
+		$dataInserted =  $wpdb->insert(
+			$tableName,
 			$data
 		);
-
-		if(is_a($id, 'WP_Error')){
-			throw new \Exception($id->get_error_message());
+		if(!$dataInserted){
+			throw new \Exception($wpdb->last_error);
 		}
-		return $id;
+		return $wpdb->insert_id;;
+	}
+
+	private function removeGuardedColumns($data)
+	{
+		foreach ($this->guarded as $key => $columnName) {
+			unset($data[$columnName]);
+		}
+
+		return $data;
 	}
 
 	private function prepareSQL($data)
 	{
 		global $wpdb;
-        $table_name = $wpdb->prefix . $this->table ;
+        $tableName = $wpdb->prefix . $this->table ;
 
 		$columns = $this->columnize(array_keys($data));
 		$parameters = $this->parameterize(array_values($data));
 
-		return "insert into $table_name ($columns) values ('$parameters')";
+		return "insert into $tableName ($columns) values ('$parameters')";
 	}
 
 	public function columnize(array $columns)
