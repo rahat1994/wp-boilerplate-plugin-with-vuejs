@@ -5,8 +5,26 @@
       <hr/>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
 
-        <el-input size="mini" v-model="ticketType.name" placeholder="Tier Name"></el-input>
-        <el-input size="mini" v-model="ticketType.price" placeholder="Tier Price"></el-input>  
+        <el-form-item label="Seat/Ticket Name">
+          <el-input size="mini" v-model="ticketType.name" placeholder="Tier Name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Price">
+          <el-input-number size="mini" v-model="ticketType.price" placeholder="Tier Price"></el-input-number>  
+        </el-form-item>
+
+        <el-form-item label="Seat Limit">
+          <el-input-number size="mini" v-model="ticketType.limit" placeholder="seat limit"></el-input-number>  
+        </el-form-item>
+
+        <el-form-item label="Ticket Description">
+          <el-input   type="textarea" autosize placeholder="Please input" v-model="ticketType.description"></el-input>
+        </el-form-item>
+        
+        
+        <br>
+        
+        
 
         <el-button v-if="index === ticketTypes.length - 1" size="mini" type="primary" @click="addTicketTypeAtTheEnd" icon="el-icon-plus">Add more</el-button>
         <el-button v-if="index !== 0 || ticketTypes.length > 1" size="mini" type="danger" @click="deleteTask(index)" icon="el-icon-close" >Remove</el-button>

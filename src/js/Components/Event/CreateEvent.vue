@@ -18,17 +18,17 @@
                             <el-input v-model="ruleForm.name"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="Event Type" prop="region">
-                            <el-select v-model="ruleForm.region" placeholder="Event Type">
-                                <el-option label="Online" value="online"></el-option>
-                                <el-option label="Offline" value="offline"></el-option>
+                        <el-form-item label="Event Type" prop="eventType">
+                            <el-select v-model="ruleForm.eventType" placeholder="Event Type">
+                                <el-option label="Online"  value="Online" ></el-option>
+                                <el-option label="Offline" value="Offline"></el-option>
                             </el-select>
                         </el-form-item>
 
                         <el-form-item label="Event time" required>
                             <el-col :span="11">
-                                <el-form-item prop="date1">
-                                    <el-date-picker type="datetime" placeholder="Pick a Date and Time" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+                                <el-form-item prop="eventDate">
+                                    <el-date-picker type="datetime" placeholder="Pick a Date and Time" v-model="ruleForm.eventDate" style="width: 100%;"></el-date-picker>
                                 </el-form-item>
                             </el-col>
                         </el-form-item>
@@ -76,36 +76,37 @@ export default {
       return {
         ruleForm: {
           eventName: '',
-          eventRegion: '',
+          eventType: "Online",
           eventDate: '',
-          openEvent:true,
+          openEvent: true,
           type: [],
           resource: '',
           desc: '',
           ticketTypes:[
             {
               name: "V.I.P",
-              price: 500
+              price: 500,
+              limit: 40,
+              description:""
             },
             {
               name: "V.V.I.P",
-              price: 1500
+              price: 1500,
+              limit: 80,
+              description:""
             }
           ],
         },
         rules: {
           name: [
-            { required: true, message: 'Please input Activity name', trigger: 'blur' },
-            { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+            { required: true, message: 'Please input Event name', trigger: 'blur' },
+            { min: 8, message: 'Length should be at laast 8 characters long', trigger: 'blur' }
           ],
-          region: [
-            { required: true, message: 'Please select Activity zone', trigger: 'change' }
+          eventType: [
+            { required: true, message: 'Please select event type', trigger: 'change' }
           ],
-          date1: [
+          eventDate: [
             { type: 'date', required: true, message: 'Please pick a date', trigger: 'change' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: 'Please pick a time', trigger: 'change' }
           ],
           type: [
             { type: 'array', required: true, message: 'Please select at least one activity type', trigger: 'change' }
@@ -121,11 +122,26 @@ export default {
     },
     methods: {
       submitForm(formName) {
-        console.log(this.ruleForm);
-        return;
+
+        var formData = {
+            'route' : 'create_event',
+            'data' : {
+                'name': this.ruleForm.name,
+                'is_online': (this.ruleForm.eventType === 'Online') ? 1 : 0,
+                'description': this.ruleForm.desc,
+                'social_media':'[{}]',
+                'form_fields':'[{}]',
+                'ticket_types':this.ruleForm.ticketTypes
+            }
+        }
+
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            
+            this.$adminPost(formData).then((data) => {
+                console.log(data);
+            });
+
           } else {
             console.log('error submit!!');
             return false;
