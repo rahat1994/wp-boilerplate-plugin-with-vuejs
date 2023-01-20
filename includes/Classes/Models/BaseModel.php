@@ -2,6 +2,8 @@
 
 namespace reventz\Classes\Models;
 defined( 'ABSPATH' ) || exit();
+
+use Exception;
 use reventz\Classes\Traits\DBTraits;
 class BaseModel
 {
@@ -17,7 +19,7 @@ class BaseModel
 	protected $guarded = ['id'];
 
 
-	public function create($data)
+	public function create($data) : int
 	{
 		$data = $this->removeGuardedColumns($data);
 
@@ -28,7 +30,7 @@ class BaseModel
 			$data
 		);
 		if(!$dataInserted){
-			throw new \Exception($wpdb->last_error);
+			throw new Exception($wpdb->last_error);
 		}
 		return $wpdb->insert_id;;
 	}
