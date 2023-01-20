@@ -1,9 +1,11 @@
 <?php
 
 namespace reventz\Classes;
-use reventz\Classes\Models\TicketType;
+
 defined( 'ABSPATH' ) || exit();
 use reventz\Classes\Models\Event;
+use reventz\Classes\Models\TicketType;
+use reventz\Classes\Controllers\EventController;
 
 class AdminAjaxHandler
 {
@@ -14,7 +16,6 @@ class AdminAjaxHandler
     public function handleEndPoint()
     {
         $route = sanitize_text_field($_REQUEST['route']);
-
         $validRoutes = array(
             'get_data' => 'getData',
             'create_event' => 'createEvent',
@@ -38,53 +39,14 @@ class AdminAjaxHandler
 
     protected function createEvent()
     {
+
+        $eventController = new EventController();
+
         try {
-            $data = [
-                'name' => 'TEDx SUST',
-                'is_online' => 1,
-                'slug' => 'tedx-sust',
-                'description' => 'This is description',
-                'social_media' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
-                'form_fields' => '[{"Test1": {"Val1": "37", "Val2": "25"}}, {"Test2": {"Val1": "25", "Val2": "27"}}]',
-                'ticket_types' => [                    
-                    
-                    [
-                        "name" => "V.I.P Seats",
-                        "price" => 1500,
-                        "limit" => 50,
-                        "Descroption" => "Thisi si akha description"
-                        
-                    ],
-                    [
-                        "name" => "Second Row",
-                        "price" => 500,
-                        "limit" => 420,
-                        "Descroption" => "Thisi si akha description"
-                    ]
-                                        
-                ]
-            ];
 
-            $eventTableData = $data;
-            unset($eventTableData['ticket_types']);
-
-            $event = new Event();
-            $event_id = $event->create($eventTableData);
-
-            $ticketTypeIdArray = [];
-            foreach ($data['ticket_types'] as $ticketTypekey => $ticketTypeData) {
-
-                $ticketType = new TicketType();
-                $ticketTypeData['event_id'] = $event_id;
-                $ticketTypeIdArray[] = $ticketType->create($ticketTypeData);
-
-            }
-    
-            $data = [
-                'data' => "Event Created Succesfully"
-            ];
-
-            wp_send_json_success($data);
+            $data = $_REQUEST['data'];
+            $result = $eventController->create($data);
+            wp_send_json_success($result);
         } catch (\Exception $e) {
             wp_send_json_error([
                 'message' => $e->getMessage()
