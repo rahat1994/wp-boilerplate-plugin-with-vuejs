@@ -126,7 +126,7 @@ export default {
                 'description': this.ruleForm.desc,
                 'social_media':'[{}]',
                 'form_fields':'[{}]',
-                'ticket_types': (this.ruleForm.openEvent) ? this.ruleForm.ticketTypes : '[]'
+                'ticket_types': (!this.ruleForm.openEvent) ? this.ruleForm.ticketTypes : '[]'
             }
         }
         
