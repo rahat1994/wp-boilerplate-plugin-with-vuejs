@@ -10,7 +10,7 @@ class TicketType extends BaseModel
 	 *
 	 * @var string
 	 */
-    protected $table = 're_ticket_types';
+    protected static $table = 're_ticket_types';
 
 
 }

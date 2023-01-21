@@ -13,18 +13,28 @@ class BaseModel
 	 *
 	 * @var string
 	 */
-    protected $table;
+    protected static $table;
 
 	protected $fillable;
 	protected $guarded = ['id'];
 
+	public static function all()
+	{
+		global $wpdb;
+		$tableName = $wpdb->prefix . static::$table;
 
+		
+		$query = "SELECT id, name FROM ".$tableName."";
+		$rows = $wpdb->get_results($query, ARRAY_A);
+
+		return $rows;
+	}
 	public function create($data) : int
 	{
 		$data = $this->removeGuardedColumns($data);
 
 		global $wpdb;
-		$tableName = $wpdb->prefix . $this->table;
+		$tableName = $wpdb->prefix . static::$table;
 		$dataInserted =  $wpdb->insert(
 			$tableName,
 			$data
@@ -47,7 +57,7 @@ class BaseModel
 	private function prepareSQL($data)
 	{
 		global $wpdb;
-        $tableName = $wpdb->prefix . $this->table ;
+        $tableName = $wpdb->prefix . static::$table ;
 
 		$columns = $this->columnize(array_keys($data));
 		$parameters = $this->parameterize(array_values($data));
