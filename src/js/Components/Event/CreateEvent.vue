@@ -34,11 +34,11 @@
                         </el-form-item>
 
 
-                        <el-form-item label="Free to join" prop="delivery">
-                            <el-switch v-model="ruleForm.openEvent"></el-switch>
+                        <el-form-item label="Free to join" prop="delivery" >
+                            <el-switch v-model="ruleForm.openEvent" @change="handleOpenEventChange"></el-switch>
                         </el-form-item>
 
-                        <el-form-item v-if="ruleForm.openEvent" label="Ticket Tiers" prop="delivery">
+                        <el-form-item v-if="!ruleForm.openEvent" label="Ticket Tiers" prop="delivery">
                             <ticket-type 
                               @delete-ticket-type="removeTicketTypeAtIndex"
                               :ticketTypes="ruleForm.ticketTypes" 
@@ -66,6 +66,7 @@
 <script>
 
 import TicketType from "./TicketType.vue";
+import swal from 'sweetalert';
 
 export default {
     name: 'CreateEvent',
@@ -84,15 +85,9 @@ export default {
           desc: '',
           ticketTypes:[
             {
-              name: "V.I.P",
-              price: 500,
-              limit: 40,
-              description:""
-            },
-            {
-              name: "V.V.I.P",
-              price: 1500,
-              limit: 80,
+              name: "",
+              price: 0,
+              limit: 0,
               description:""
             }
           ],
@@ -131,19 +126,59 @@ export default {
                 'description': this.ruleForm.desc,
                 'social_media':'[{}]',
                 'form_fields':'[{}]',
-                'ticket_types':this.ruleForm.ticketTypes
+                'ticket_types': (this.ruleForm.openEvent) ? this.ruleForm.ticketTypes : '[]'
             }
         }
-
-        this.$refs[formName].validate((valid) => {
+        
+        this.$refs[formName].validate(async (valid) =>  {
           if (valid) {
             
-            this.$adminPost(formData).then((data) => {
-                console.log(data);
-            });
+            let data = await this.$adminPost(formData);
+
+            if(data.success === true){
+              swal({
+                title: data.data.data,
+                icon: "success",
+                button: {
+                  text: "OK",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+                }
+              }).then((decision) => {
+                if(decision === true){
+                  this.resetForm(formName);
+                } else{
+
+                }              
+              });
+            } else{
+              swal({
+                title: data.data,
+                icon: "error",
+                button: {
+                  text: "OK",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+                }
+              });
+            }
 
           } else {
-            console.log('error submit!!');
+            swal({
+                title: "Please fill-up the form properly",
+                icon: "error",
+                button: {
+                  text: "OK",
+                  value: true,
+                  visible: true,
+                  className: "",
+                  closeModal: true,
+                }
+              });
             return false;
           }
         });
@@ -161,6 +196,9 @@ export default {
       removeTicketTypeAtIndex(index){
         console.log('task', index);
         this.ruleForm.ticketTypes.splice(index, 1)
+      },
+      handleOpenEventChange(event){
+        console.log(this.ruleForm.openEvent);
       }
     }
 }

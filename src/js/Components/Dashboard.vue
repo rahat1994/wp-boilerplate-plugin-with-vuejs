@@ -6,7 +6,7 @@
             <el-col :span="18">
               <h2>Events</h2>                      
             </el-col>
-            <el-col :span="6" push="3">
+            <el-col :span="6">
               <el-button @click="ajax()" type="primary" icon="el-icon-plus" round>Add New Event</el-button>
             </el-col>            
           </el-row>            
