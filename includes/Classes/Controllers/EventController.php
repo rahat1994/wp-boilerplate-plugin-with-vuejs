@@ -9,6 +9,11 @@ defined( 'ABSPATH' ) || exit();
 class EventController
 {
 
+    public function getEvents()
+    {
+        $events = Event::all();
+        return $events;
+    }
     public function create($data)
     {
         try {

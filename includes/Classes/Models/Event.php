@@ -10,7 +10,24 @@ class Event extends BaseModel
 	 *
 	 * @var string
 	 */
-    protected $table = 're_events';
-
+    protected static $table = 're_events';
+	
 	protected $guarded = ['id'];
+
+	public static function allWithBookings()
+	{
+		global $wpdb;
+		$eventTableName = $wpdb->prefix . static::$table;
+		$bookingsTableName = $wpdb->prefix . 're_bookings';
+
+		$query = "SELECT ".$eventTableName.".id, ".$eventTableName.".name,  COUNT(".$bookingsTableName.".event_id) AS booking_count" .
+			" FROM " . $bookingsTableName.
+			" RIGHT JOIN ".$eventTableName." ON ".$eventTableName.".id=".$bookingsTableName.".event_id" .
+			" GROUP BY ".$eventTableName.".id";
+
+
+		$rows = $wpdb->get_results($query, ARRAY_A);
+
+		return $rows;
+	}
 }

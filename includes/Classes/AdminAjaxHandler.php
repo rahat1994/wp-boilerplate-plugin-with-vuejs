@@ -18,6 +18,7 @@ class AdminAjaxHandler
         $route = sanitize_text_field($_REQUEST['route']);
         $validRoutes = array(
             'get_data' => 'getData',
+            'events' => 'getEvents',
             'create_event' => 'createEvent',
         );
 
@@ -53,6 +54,18 @@ class AdminAjaxHandler
             ], 423);
         }
 
+    }
+
+    protected function getEvents()
+    {
+
+        try {
+            wp_send_json_success(Event::allWithBookings());            
+        } catch (\Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ], 423);
+        }
     }
 }
 
