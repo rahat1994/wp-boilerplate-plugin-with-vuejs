@@ -13,6 +13,11 @@
         </el-header>        
         <el-main>
           <el-table
+              v-loading="loading"
+              element-loading-text="Loading..."
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
+              
               :data="formList"
               :fit="true"
               :default-sort = "{prop: 'id', order: 'descending'}"
@@ -65,6 +70,7 @@ export default {
     },
     data(){
         return {
+          loading:true,
           formList:[
             {
               id: 1,
@@ -105,10 +111,30 @@ export default {
             route: 'create_event'
           };
           this.$adminGet(option).then((data) => {
+
+            var formData = {'route' : 'create_event'}
               console.log(data);
           });
         }
+    },
+    async mounted(){
+      var option = {
+            route: 'events'
+      };
+      let result = await this.$adminGet(option);
+      this.formList = result.data.map((event) =>{
+        return {
+              id: event.id,
+              name: event.name,
+              shortCode:"[Reventz id='"+event.id+"']",
+              bookings: event.booking_count,
+              views: 0,
+              conversion: 10
+            }
+      })
+      this.loading = false;
     }
+
 }
 </script>
 <style>
